@@ -1,0 +1,45 @@
+{
+  "name": "colorized-comments",
+  "displayName": "Colorized Comments",
+  "description": "Colorized Comments 是一个VSCode扩展，旨在为代码中的注释添加可自定义的颜色框。开发者可以通过RGB值调节注释的颜色，使代码的注释更加醒目，提升代码的可读性和美观性。",
+  "version": "0.0.1",
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage",
+    "*"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [],
+    "keybindings": [],
+    "menus": {
+      "editor/context": []
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.39.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "colorized-comments": "file:"
+  }
+}
