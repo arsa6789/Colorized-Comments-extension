@@ -21,6 +21,18 @@
         "title": "Change Comment Style"
       }
     ],
+    "configuration": {
+      "title": "Colorized Comments",
+      "properties": {
+        "colorizedComments.hoverDelay": {
+          "type": "number",
+          "default": 2000,
+          "minimum": 0,
+          "maximum": 10000,
+          "description": "悬停多少毫秒后显示颜色选择器 (0-10000ms)"
+        }
+      }
+    },
     "menus": {
       "editor/context": [
         {

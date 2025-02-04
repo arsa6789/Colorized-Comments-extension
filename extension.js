@@ -196,13 +196,17 @@ function activate(context) {
       const line = document.lineAt(position.line);
       if (isCommentLine(line.text, document.languageId)) {
         return new Promise((resolve) => {
+          // 从配置中获取延迟时间
+          const config = vscode.workspace.getConfiguration('colorizedComments');
+          const hoverDelay = config.get('hoverDelay', 2000);
+
           setTimeout(async () => {
             const editor = vscode.window.activeTextEditor;
             if (editor) {
               await showColorPicker(editor, position.line);
             }
             resolve(null);
-          }, 1000);
+          }, hoverDelay);
         });
       }
     },
