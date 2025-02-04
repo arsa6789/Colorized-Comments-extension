@@ -39,34 +39,42 @@ function activate(context) {
   function applyDecoration(editor, line, color, type) {
     const range = editor.document.lineAt(line).range;
     const uri = editor.document.uri.toString();
+    const key = `${uri}:${line}`;
+
+    // 获取现有的装饰器选项
+    let currentDecoration = decorations[uri]?.[line] || {};
+    
+    // 更新当前类型的颜色
+    if (type === 'background') {
+      currentDecoration.backgroundColor = color;
+    } else {
+      currentDecoration.color = color;
+    }
 
     // 清除已有的装饰器
-    if (lineDecorations.has(`${uri}:${line}`)) {
-      const oldDecoration = lineDecorations.get(`${uri}:${line}`);
-      oldDecoration.dispose();
-      lineDecorations.delete(`${uri}:${line}`);
+    if (lineDecorations.has(key)) {
+      lineDecorations.get(key).dispose();
+      lineDecorations.delete(key);
     }
 
-    // 创建新的装饰器
+    // 创建新的装饰器选项
     const decorationOptions = {};
-    if (type === 'background') {
-      decorationOptions.backgroundColor = color + "55"; // 添加透明度
+    if (currentDecoration.backgroundColor) {
+      decorationOptions.backgroundColor = currentDecoration.backgroundColor + "55"; // 添加透明度
       decorationOptions.isWholeLine = true;
-    } else {
-      decorationOptions.color = color;
+    }
+    if (currentDecoration.color) {
+      decorationOptions.color = currentDecoration.color;
     }
 
+    // 创建并应用新的装饰器
     const decoration = vscode.window.createTextEditorDecorationType(decorationOptions);
-
-    // 应用装饰器
     editor.setDecorations(decoration, [range]);
-
-    // 保存装饰器实例
-    lineDecorations.set(`${uri}:${line}`, decoration);
+    lineDecorations.set(key, decoration);
 
     // 更新持久化存储
     decorations[uri] = decorations[uri] || {};
-    decorations[uri][line] = { color, type };
+    decorations[uri][line] = currentDecoration;
     context.workspaceState.update("decorations", decorations);
   }
 
@@ -152,7 +160,12 @@ function activate(context) {
         const uri = editor.document.uri.toString();
         const fileDecorations = decorations[uri] || {};
         Object.entries(fileDecorations).forEach(([line, decoration]) => {
-          applyDecoration(editor, parseInt(line), decoration.color, decoration.type);
+          if (decoration.backgroundColor) {
+            applyDecoration(editor, parseInt(line), decoration.backgroundColor, 'background');
+          }
+          if (decoration.color) {
+            applyDecoration(editor, parseInt(line), decoration.color, 'text');
+          }
         });
       }
     })
@@ -163,7 +176,12 @@ function activate(context) {
     const uri = vscode.window.activeTextEditor.document.uri.toString();
     const fileDecorations = decorations[uri] || {};
     Object.entries(fileDecorations).forEach(([line, decoration]) => {
-      applyDecoration(vscode.window.activeTextEditor, parseInt(line), decoration.color, decoration.type);
+      if (decoration.backgroundColor) {
+        applyDecoration(vscode.window.activeTextEditor, parseInt(line), decoration.backgroundColor, 'background');
+      }
+      if (decoration.color) {
+        applyDecoration(vscode.window.activeTextEditor, parseInt(line), decoration.color, 'text');
+      }
     });
   }
 
