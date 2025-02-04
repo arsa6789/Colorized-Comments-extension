@@ -17,7 +17,16 @@
   ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "colorized-comments.setColor",
+        "title": "Set Comment Color"
+      },
+      {
+        "command": "colorized-comments.setCommentColor",
+        "title": "Set Comment Background Color"
+      }
+    ],
     "keybindings": [],
     "menus": {
       "editor/context": []
