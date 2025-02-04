@@ -2,7 +2,7 @@
   "name": "colorized-comments",
   "displayName": "Colorized Comments",
   "description": "Customize your code comments with colorful backgrounds and text colors to improve readability. 为代码注释添加自定义颜色，提升可读性。",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "ChenKaiXuan",
   "author": {
     "name": "Chen KaiXuan",
@@ -12,8 +12,9 @@
     "type": "git",
     "url": "https://github.com/tju-tomorrow/Colorized-Comments-extension.git"
   },
+  "private": true,
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.96.0"
   },
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -36,7 +37,7 @@
     "onStartupFinished",
     "*"
   ],
-  "main": "./extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -49,7 +50,7 @@
       "properties": {
         "colorizedComments.hoverDelay": {
           "type": "number",
-          "default": 2000,
+          "default": 3000,
           "minimum": 0,
           "maximum": 10000,
           "description": "悬停多少毫秒后显示颜色选择器 (0-10000ms)"
@@ -67,20 +68,23 @@
     }
   },
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.74.0",
+    "@types/vscode": "^1.96.0",
     "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   },
   "license": "MIT",
   "dependencies": {

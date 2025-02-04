@@ -305,7 +305,7 @@ function activate(context) {
         return new Promise((resolve) => {
           // 从用户配置中获取延迟时间
           const config = vscode.workspace.getConfiguration("colorizedComments");
-          const hoverDelay = config.get("hoverDelay", 2000);
+          const hoverDelay = config.get("hoverDelay", 3000);
 
           // 延迟显示颜色选择器
           setTimeout(async () => {

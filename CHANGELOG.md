@@ -2,6 +2,13 @@
 
 All notable changes to the "Colorized Comments" extension will be documented in this file.
 
+## [1.0.1] - 2025-02-05
+
+### Changed 📝
+- Updated README with demonstration GIF
+- Improved documentation structure
+- delay for hover to 3 seconds (configurable)
+
 ## [1.0.0] - 2025-02-05
 
 ### Initial Release 🎉
