@@ -14,14 +14,85 @@ const colorOptions = {
   lime: "#32CD32"
 };
 
+// 定义各种语言的注释格式
+const commentPatterns = {
+  // C-style languages
+  'javascript': { line: '//', block: { start: '/*', end: '*/' } },
+  'typescript': { line: '//', block: { start: '/*', end: '*/' } },
+  'java': { line: '//', block: { start: '/*', end: '*/' } },
+  'c': { line: '//', block: { start: '/*', end: '*/' } },
+  'cpp': { line: '//', block: { start: '/*', end: '*/' } },
+  'csharp': { line: '//', block: { start: '/*', end: '*/' } },
+  'go': { line: '//', block: { start: '/*', end: '*/' } },
+  'rust': { line: '//', block: { start: '/*', end: '*/' } },
+  'swift': { line: '//', block: { start: '/*', end: '*/' } },
+  'kotlin': { line: '//', block: { start: '/*', end: '*/' } },
+  
+  // Script languages
+  'python': { line: '#', block: { start: '"""', end: '"""' } },
+  'ruby': { line: '#', block: { start: '=begin', end: '=end' } },
+  'perl': { line: '#', block: { start: '=pod', end: '=cut' } },
+  'shell': { line: '#' },
+  'powershell': { line: '#', block: { start: '<#', end: '#>' } },
+  'batch': { line: 'REM' },
+  
+  // Web languages
+  'html': { block: { start: '<!--', end: '-->' } },
+  'css': { block: { start: '/*', end: '*/' } },
+  'less': { line: '//', block: { start: '/*', end: '*/' } },
+  'scss': { line: '//', block: { start: '/*', end: '*/' } },
+  'xml': { block: { start: '<!--', end: '-->' } },
+  'php': { line: '//', block: { start: '/*', end: '*/' } },
+  
+  // Database
+  'sql': { line: '--', block: { start: '/*', end: '*/' } },
+  'plsql': { line: '--', block: { start: '/*', end: '*/' } },
+  
+  // Config files
+  'yaml': { line: '#' },
+  'toml': { line: '#' },
+  'ini': { line: ';' },
+  'properties': { line: '#' },
+  
+  // Other languages
+  'lua': { line: '--', block: { start: '--[[', end: ']]' } },
+  'matlab': { line: '%', block: { start: '%{', end: '%}' } },
+  'r': { line: '#' },
+  'haskell': { line: '--', block: { start: '{-', end: '-}' } },
+  'lisp': { line: ';', block: { start: '#|', end: '|#' } },
+  'erlang': { line: '%' },
+  'elixir': { line: '#' },
+  'julia': { line: '#', block: { start: '#=', end: '=#' } },
+  'dart': { line: '//', block: { start: '/*', end: '*/' } },
+  'scala': { line: '//', block: { start: '/*', end: '*/' } }
+};
+
 // 检查是否是注释行
-const isCommentLine = (text) => {
+const isCommentLine = (text, languageId = '') => {
   const trimmedText = text.trim();
-  return (
-    trimmedText.startsWith("//") ||
-    trimmedText.startsWith("#") ||
-    trimmedText.startsWith("/*")
-  );
+  if (!trimmedText) return false;
+
+  // 获取当前语言的注释格式
+  const pattern = commentPatterns[languageId.toLowerCase()] || {
+    line: '//',  // 默认使用C风格注释
+    block: { start: '/*', end: '*/' }
+  };
+
+  // 检查行注释
+  if (pattern.line && trimmedText.startsWith(pattern.line)) {
+    return true;
+  }
+
+  // 检查块注释
+  if (pattern.block) {
+    if (trimmedText.startsWith(pattern.block.start) || 
+        trimmedText.endsWith(pattern.block.end) ||
+        trimmedText.startsWith('*')) {  // 处理多行块注释的中间行
+      return true;
+    }
+  }
+
+  return false;
 };
 
 function activate(context) {
@@ -123,7 +194,7 @@ function activate(context) {
   const hoverProvider = vscode.languages.registerHoverProvider("*", {
     provideHover(document, position) {
       const line = document.lineAt(position.line);
-      if (isCommentLine(line.text)) {
+      if (isCommentLine(line.text, document.languageId)) {
         return new Promise((resolve) => {
           setTimeout(async () => {
             const editor = vscode.window.activeTextEditor;
@@ -147,7 +218,7 @@ function activate(context) {
       const position = editor.selection.active;
       const line = editor.document.lineAt(position.line);
       
-      if (isCommentLine(line.text)) {
+      if (isCommentLine(line.text, editor.document.languageId)) {
         await showColorPicker(editor, position.line);
       }
     }
