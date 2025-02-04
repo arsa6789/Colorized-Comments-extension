@@ -1,69 +1,50 @@
-# 扩展概述
+# Colorized Comments
 
-Colorized Comments 是一个 VSCode 扩展，旨在为代码中的注释添加可自定义的颜色框。开发者可以通过 RGB 值调节注释的颜色，使代码的注释更加醒目，提升代码的可读性和美观性。
+[中文](README_CN.md) | English
 
-# 目标用户
+A VS Code extension that allows you to customize your code comments with colorful backgrounds and text colors. Make your important comments stand out and improve code readability.
 
-本扩展适合任何需要高效管理和区分代码注释的开发者，尤其是希望在繁重的代码中快速找到关键注释的开发人员。
+## Features
 
-# 使用方法
+- 🎨 Preset color schemes
+- 🔄 Customize both background and text colors
+- 💾 Persistent color settings across sessions
+- 🌍 Support for 30+ programming languages
+- ⚡ Access via hover or right-click menu
 
-1. 安装扩展后，打开任意代码文件。
-2. 在注释行 鼠标悬浮${HoverDelay}s后 会出现一个颜色框，点击选择特定颜色（10种）//若太多可能导致文档太混乱
-3. 或者在注释处右键，选择 ‘Change Color’会弹出选择框，从中选择颜色。
+## Usage
 
-# 配置说明
+### Via Mouse Hover
 
-## 功能
+1. Hover over any comment line
+2. Wait for 2 seconds (configurable)
+3. Choose background/text color
+4. Select your preferred color
 
-- 通过悬停在注释上来修改注释样式
-- 支持修改注释的文字颜色和背景色
-- 支持通过右键菜单修改注释样式
-- 支持多种编程语言的注释格式
+### Via Right-Click Menu
 
-## 配置选项
+1. Right-click on a comment line
+2. Select "Change Comment Style"
+3. Follow the prompts
 
-你可以通过以下步骤自定义扩展的行为：
+## Extension Settings
 
-1. 打开 VS Code 的设置（文件 > 首选项 > 设置，或按 `Ctrl+,`）
-2. 搜索 "colorizedComments"
-3. 或者直接编辑 settings.json，添加以下配置：
+| Setting                        | Description                             | Default |
+| ------------------------------ | --------------------------------------- | ------- |
+| `colorizedComments.hoverDelay` | Hover delay before showing color picker | 2000ms  |
 
-```json
-{
-    "colorizedComments.hoverDelay": 2000  // 悬停延迟时间（毫秒），默认2000ms
-}
-```
-
-### 可用的配置项
-
-| 配置项 | 描述 | 默认值 | 可选值范围 |
-|--------|------|---------|------------|
-| `colorizedComments.hoverDelay` | 悬停多少毫秒后显示颜色选择器 | 2000 | 0-10000 |
-
-## 使用方法
-
-1. 将鼠标悬停在任意注释行上
-2. 等待配置的延迟时间后（默认2秒）
-3. 在弹出的选择器中选择要修改的样式类型（背景色或文字颜色）
-4. 选择想要的颜色
-
-或者：
-
-1. 右键点击注释行
-2. 选择 "Change Comment Style"
-3. 选择要修改的样式类型和颜色
-
-## 支持的语言
-
-支持所有 VS Code 支持的编程语言的注释，包括但不限于：
+## Supported Languages
 
 - JavaScript/TypeScript
-- Python
-- Java
-- C/C++
-- HTML/CSS
-- PHP
-- Ruby
-- Go
-等...
+- Python, Java, C/C++
+- HTML, CSS, PHP
+- And 25+ more languages
+
+## Feedback
+
+- 📧 Email: chenkaixuan23_@tju.edu.cn
+- 💻 GitHub: [@tju-tomorrow](https://github.com/tju-tomorrow)
+
+## License
+
+MIT License - See LICENSE file for details

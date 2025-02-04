@@ -1,0 +1,18 @@
+# Change Log
+
+All notable changes to the "Colorized Comments" extension will be documented in this file.
+
+## [1.0.0] - 2025-02-05
+
+### Initial Release 🎉
+
+- Added support for customizing comment colors
+- Features:
+  - Background color customization
+  - Text color customization
+  - Support for 30+ programming languages
+  - Mouse hover activation
+  - Right-click menu option
+- Settings:
+  - Configurable hover delay
+- Persistent storage of color settings
