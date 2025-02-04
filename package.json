@@ -25,11 +25,21 @@
       {
         "command": "colorized-comments.setCommentColor",
         "title": "Set Comment Background Color"
+      },
+      {
+        "command": "colorized-comments.changeCommentColorByMenu",
+        "title": "Change Comment Color"
       }
     ],
     "keybindings": [],
     "menus": {
-      "editor/context": []
+      "editor/context": [
+        {
+          "when": "editorTextFocus",
+          "command": "colorized-comments.changeCommentColorByMenu",
+          "group": "1_modification"
+        }
+      ]
     }
   },
   "scripts": {

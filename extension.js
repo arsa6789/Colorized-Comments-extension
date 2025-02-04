@@ -145,7 +145,38 @@ function activate(context) {
       if (!editor) return;
 
       const { line, color } = args;
-      applyDecoration(editor, line, color); // 不需要传递 context
+      applyDecoration(editor, line, color);
+    }
+  );
+
+  // 注册右键菜单命令
+  let rightClickCommand = vscode.commands.registerCommand(
+    "colorized-comments.changeCommentColorByMenu",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) return;
+
+      const position = editor.selection.active;
+      const line = editor.document.lineAt(position.line);
+
+      if (isCommentLine(line.text)) {
+        // 创建快速选择项
+        const items = [
+          { label: "黄色", color: "yellow" },
+          { label: "蓝色", color: "blue" },
+          { label: "绿色", color: "green" },
+          { label: "红色", color: "red" },
+          { label: "紫色", color: "purple" },
+        ];
+
+        const selected = await vscode.window.showQuickPick(items, {
+          placeHolder: "选择注释颜色",
+        });
+
+        if (selected) {
+          applyDecoration(editor, position.line, selected.color);
+        }
+      }
     }
   );
 
@@ -172,7 +203,7 @@ function activate(context) {
   }
 
   // 将提供器和命令加入订阅列表（扩展生命周期管理）
-  context.subscriptions.push(hoverProvider, colorSetCommand);
+  context.subscriptions.push(hoverProvider, colorSetCommand, rightClickCommand);
 }
 
 function deactivate() {}
