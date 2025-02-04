@@ -3,10 +3,14 @@
   "displayName": "Colorized Comments",
   "description": "Customize your code comments with colorful backgrounds and text colors to improve readability. 为代码注释添加自定义颜色，提升可读性。",
   "version": "1.0.0",
-  "publisher": "Chen KaiXuan",
+  "publisher": "ChenKaiXuan",
   "author": {
     "name": "Chen KaiXuan",
     "email": "chenkaixuan23_@tju.edu.cn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tju-tomorrow/Colorized-Comments-extension.git"
   },
   "engines": {
     "vscode": "^1.74.0"
@@ -29,6 +33,7 @@
     "高亮"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "*"
   ],
   "main": "./extension.js",
