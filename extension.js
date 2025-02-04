@@ -152,16 +152,16 @@ function activate(context) {
   // 创建颜色选择项
   function createColorItems() {
     return [
-      { label: "黄色", color: colorOptions.yellow },
-      { label: "蓝色", color: colorOptions.blue },
-      { label: "绿色", color: colorOptions.green },
-      { label: "红色", color: colorOptions.red },
-      { label: "紫色", color: colorOptions.purple },
-      { label: "橙色", color: colorOptions.orange },
-      { label: "粉色", color: colorOptions.pink },
-      { label: "青色", color: colorOptions.cyan },
-      { label: "棕色", color: colorOptions.brown },
-      { label: "青柠色", color: colorOptions.lime }
+      { label: "$(symbol-color) 阳光黄 🌞", description: "明亮温暖的黄色", color: colorOptions.yellow },
+      { label: "$(symbol-color) 海洋蓝 🌊", description: "深邃的蓝色", color: colorOptions.blue },
+      { label: "$(symbol-color) 森林绿 🌲", description: "自然的绿色", color: colorOptions.green },
+      { label: "$(symbol-color) 玫瑰红 🌹", description: "热情的红色", color: colorOptions.red },
+      { label: "$(symbol-color) 梦幻紫 🌌", description: "神秘的紫色", color: colorOptions.purple },
+      { label: "$(symbol-color) 橙子橙 🍊", description: "活力的橙色", color: colorOptions.orange },
+      { label: "$(symbol-color) 樱花粉 🌸", description: "甜美的粉色", color: colorOptions.pink },
+      { label: "$(symbol-color) 碧海青 🌿", description: "清新的青色", color: colorOptions.cyan },
+      { label: "$(symbol-color) 可可棕 🍫", description: "温暖的棕色", color: colorOptions.brown },
+      { label: "$(symbol-color) 柠檬绿 🍋", description: "清爽的青柠色", color: colorOptions.lime }
     ];
   }
 
@@ -169,12 +169,14 @@ function activate(context) {
   async function showColorPicker(editor, line) {
     // 首先选择修改类型
     const typeItems = [
-      { label: "修改背景色", type: "background" },
-      { label: "修改文字颜色", type: "text" }
+      { label: "$(paintcan) 修改背景色", description: "给注释添加背景色", detail: "让注释更加醒目", type: "background" },
+      { label: "$(edit) 修改文字颜色", description: "改变注释文字颜色", detail: "让文字更有特色", type: "text" }
     ];
 
     const selectedType = await vscode.window.showQuickPick(typeItems, {
-      placeHolder: "选择要修改的样式"
+      placeHolder: "✨ 选择要修改的样式 ✨",
+      matchOnDescription: true,
+      matchOnDetail: true
     });
 
     if (!selectedType) return;
@@ -182,7 +184,8 @@ function activate(context) {
     // 然后选择具体颜色
     const colorItems = createColorItems();
     const selected = await vscode.window.showQuickPick(colorItems, {
-      placeHolder: `选择${selectedType.type === 'background' ? '背景' : '文字'}颜色`
+      placeHolder: `🎨 选择${selectedType.type === 'background' ? '背景' : '文字'}颜色`,
+      matchOnDescription: true
     });
 
     if (selected) {
