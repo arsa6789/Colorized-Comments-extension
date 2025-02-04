@@ -11,27 +11,16 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished",
-    "onLanguage",
     "*"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "colorized-comments.setColor",
-        "title": "Set Comment Color"
-      },
-      {
-        "command": "colorized-comments.setCommentColor",
-        "title": "Set Comment Background Color"
-      },
-      {
         "command": "colorized-comments.changeCommentColorByMenu",
-        "title": "Change Comment Color"
+        "title": "Change Comment Style"
       }
     ],
-    "keybindings": [],
     "menus": {
       "editor/context": [
         {
