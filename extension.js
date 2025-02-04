@@ -24,9 +24,6 @@ const commentDecorations = {
   }),
 };
 
-// 使用Map数据结构存储装饰器信息
-let decorationMap = new Map(); // 使用new关键字创建Map实例
-
 // 箭头函数定义：检查是否是注释行
 const isCommentLine = (text) => {
   // 字符串处理方法：
@@ -38,26 +35,6 @@ const isCommentLine = (text) => {
   );
 };
 
-// 函数声明：应用装饰器到指定行
-function applyDecoration(editor, line, color) {
-  // 获取Range对象：new 构造函数调用
-  const range = editor.document.lineAt(line).range; // lineAt()返回TextLine对象
-
-  // Map的has()和get()方法
-  if (decorationMap.has(line)) {
-    const oldDecoration = decorationMap.get(line);
-    // 调用setDecorations方法清除旧装饰
-    editor.setDecorations(oldDecoration, []); // 第二个参数是空数组
-  }
-
-  // 对象属性访问：commentDecorations[color]
-  const decoration = commentDecorations[color];
-  // 应用新装饰器，参数为装饰器类型和范围数组
-  editor.setDecorations(decoration, [range]);
-  // Map的set()方法存储新装饰器
-  decorationMap.set(line, decoration);
-}
-
 function activate(context) {
   console.log("=============================");
   console.log("Colorized Comments 扩展正在启动...");
@@ -65,8 +42,6 @@ function activate(context) {
   // 显示通知
   vscode.window.showInformationMessage("彩色注释扩展已启动！");
 
-  // 添加初始化确认
-  vscode.window.showInformationMessage("Colorized Comments: 扩展已启动");
   const interval = setInterval(() => {
     if (vscode.workspace.textDocuments.length === 0) {
       vscode.window.showInformationMessage("启动彩色注释扩展需先打开一个文件");
@@ -74,6 +49,51 @@ function activate(context) {
       clearInterval(interval);
     }
   }, 2000);
+
+  // 初始化装饰器存储
+  let decorations = context.workspaceState.get("decorations") || {};
+  let lineDecorations = new Map(); // 存储每行的装饰器实例
+
+  // 应用装饰器到指定行
+  function applyDecoration(editor, line, color) {
+    const range = editor.document.lineAt(line).range;
+    const uri = editor.document.uri.toString();
+
+    // 清除已有的装饰器
+    if (lineDecorations.has(`${uri}:${line}`)) {
+      const oldDecoration = lineDecorations.get(`${uri}:${line}`);
+      oldDecoration.dispose();
+      lineDecorations.delete(`${uri}:${line}`);
+    }
+
+    // 为这一行创建新的装饰器实例，直接使用颜色值
+    const decoration = vscode.window.createTextEditorDecorationType({
+      backgroundColor:
+        color === "yellow"
+          ? "#FFD70055"
+          : color === "blue"
+          ? "#4169E155"
+          : color === "green"
+          ? "#32CD3255"
+          : color === "red"
+          ? "#FF450055"
+          : color === "purple"
+          ? "#9370DB55"
+          : "#FFD70055",
+      isWholeLine: true,
+    });
+
+    // 应用新装饰器
+    editor.setDecorations(decoration, [range]);
+
+    // 保存新的装饰器实例
+    lineDecorations.set(`${uri}:${line}`, decoration);
+
+    // 更新持久化存储
+    decorations[uri] = decorations[uri] || {};
+    decorations[uri][line] = color;
+    context.workspaceState.update("decorations", decorations);
+  }
 
   // 注册悬浮提示提供器（Hover Provider）
   const hoverProvider = vscode.languages.registerHoverProvider("*", {
@@ -117,43 +137,42 @@ function activate(context) {
     },
   });
 
-  // 注册命令（命令ID与package.json对应）
+  // 注册命令
   let colorSetCommand = vscode.commands.registerCommand(
     "colorized-comments.setCommentColor",
-    // 箭头函数作为回调
     (args) => {
       const editor = vscode.window.activeTextEditor;
-      if (!editor) return; // 提前返回模式
+      if (!editor) return;
 
-      // 对象解构赋值
       const { line, color } = args;
-      applyDecoration(editor, line, color);
+      applyDecoration(editor, line, color); // 不需要传递 context
     }
   );
 
-  // 将提供器和命令加入订阅列表（扩展生命周期管理）
-  context.subscriptions.push(hoverProvider, colorSetCommand);
-
-  // 事件监听：文档内容变化事件
+  // 添加编辑器切换事件监听
   context.subscriptions.push(
-    vscode.workspace.onDidChangeTextDocument((event) => {
-      // 条件判断和可选链操作
-      const editor = vscode.window.activeTextEditor;
-      if (editor?.document === event.document) {
-        // 可选链操作符?.
-        // 遍历Map的回调函数
-        decorationMap.forEach((decoration, line) => {
-          try {
-            const range = editor.document.lineAt(line).range;
-            editor.setDecorations(decoration, [range]);
-          } catch (error) {
-            // 错误处理：删除无效条目
-            decorationMap.delete(line);
-          }
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor) {
+        const uri = editor.document.uri.toString();
+        const fileDecorations = decorations[uri] || {};
+        Object.entries(fileDecorations).forEach(([line, color]) => {
+          applyDecoration(editor, parseInt(line), color);
         });
       }
     })
   );
+
+  // 初始化时应用已有装饰器
+  if (vscode.window.activeTextEditor) {
+    const uri = vscode.window.activeTextEditor.document.uri.toString();
+    const fileDecorations = decorations[uri] || {};
+    Object.entries(fileDecorations).forEach(([line, color]) => {
+      applyDecoration(vscode.window.activeTextEditor, parseInt(line), color);
+    });
+  }
+
+  // 将提供器和命令加入订阅列表（扩展生命周期管理）
+  context.subscriptions.push(hoverProvider, colorSetCommand);
 }
 
 function deactivate() {}
