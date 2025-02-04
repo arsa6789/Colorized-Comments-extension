@@ -3,35 +3,54 @@ const vscode = require("vscode");
 // 创建装饰器类型对象，使用对象字面量语法定义不同颜色的装饰器
 const commentDecorations = {
   yellow: vscode.window.createTextEditorDecorationType({
-    backgroundColor: "#FFD70055", // 使用ARGB格式颜色代码，最后两位是透明度
-    isWholeLine: true, // 布尔值，表示是否应用整行
+    backgroundColor: "#FFD70055",
+    isWholeLine: true,
   }),
   blue: vscode.window.createTextEditorDecorationType({
-    backgroundColor: "#4169E155", // 使用十六进制颜色表示法
+    backgroundColor: "#4169E155",
     isWholeLine: true,
   }),
   green: vscode.window.createTextEditorDecorationType({
-    backgroundColor: "#32CD3255", // 绿色带透明度
+    backgroundColor: "#32CD3255",
     isWholeLine: true,
   }),
   red: vscode.window.createTextEditorDecorationType({
-    backgroundColor: "#FF450055", // 红色带透明度
+    backgroundColor: "#FF450055",
     isWholeLine: true,
   }),
   purple: vscode.window.createTextEditorDecorationType({
-    backgroundColor: "#9370DB55", // 紫色带透明度
+    backgroundColor: "#9370DB55",
+    isWholeLine: true,
+  }),
+  orange: vscode.window.createTextEditorDecorationType({
+    backgroundColor: "#FFA50055",
+    isWholeLine: true,
+  }),
+  pink: vscode.window.createTextEditorDecorationType({
+    backgroundColor: "#FF69B455",
+    isWholeLine: true,
+  }),
+  cyan: vscode.window.createTextEditorDecorationType({
+    backgroundColor: "#00CED155",
+    isWholeLine: true,
+  }),
+  brown: vscode.window.createTextEditorDecorationType({
+    backgroundColor: "#A0522D55",
+    isWholeLine: true,
+  }),
+  lime: vscode.window.createTextEditorDecorationType({
+    backgroundColor: "#32CD3255",
     isWholeLine: true,
   }),
 };
 
 // 箭头函数定义：检查是否是注释行
 const isCommentLine = (text) => {
-  // 字符串处理方法：
-  const trimmedText = text.trim(); // trim() 去除首尾空白字符
+  const trimmedText = text.trim();
   return (
-    trimmedText.startsWith("//") || // 双斜杠注释
-    trimmedText.startsWith("#") || // shell/python注释
-    trimmedText.startsWith("/*") // 多行注释开始
+    trimmedText.startsWith("//") ||
+    trimmedText.startsWith("#") ||
+    trimmedText.startsWith("/*")
   );
 };
 
@@ -52,7 +71,7 @@ function activate(context) {
 
   // 初始化装饰器存储
   let decorations = context.workspaceState.get("decorations") || {};
-  let lineDecorations = new Map(); // 存储每行的装饰器实例
+  let lineDecorations = new Map();
 
   // 应用装饰器到指定行
   function applyDecoration(editor, line, color) {
@@ -66,20 +85,20 @@ function activate(context) {
       lineDecorations.delete(`${uri}:${line}`);
     }
 
-    // 为这一行创建新的装饰器实例，直接使用颜色值
+    // 为这一行创建新的装饰器实例
     const decoration = vscode.window.createTextEditorDecorationType({
-      backgroundColor:
-        color === "yellow"
-          ? "#FFD70055"
-          : color === "blue"
-          ? "#4169E155"
-          : color === "green"
-          ? "#32CD3255"
-          : color === "red"
-          ? "#FF450055"
-          : color === "purple"
-          ? "#9370DB55"
-          : "#FFD70055",
+      backgroundColor: {
+        yellow: "#FFD70055",
+        blue: "#4169E155",
+        green: "#32CD3255",
+        red: "#FF450055",
+        purple: "#9370DB55",
+        orange: "#FFA50055",
+        pink: "#FF69B455",
+        cyan: "#00CED155",
+        brown: "#A0522D55",
+        lime: "#32CD3255",
+      }[color] || "#FFD70055",
       isWholeLine: true,
     });
 
@@ -95,23 +114,25 @@ function activate(context) {
     context.workspaceState.update("decorations", decorations);
   }
 
-  // 注册悬浮提示提供器（Hover Provider）
+  // 注册悬浮提示提供器
   const hoverProvider = vscode.languages.registerHoverProvider("*", {
-    // 实现provideHover方法（接口实现）
     provideHover(document, position) {
-      // 获取TextLine对象
       const line = document.lineAt(position.line);
       if (isCommentLine(line.text)) {
-        // 定义颜色命令数组（对象数组）
+        // 定义颜色命令数组
         const colorCommands = [
           { label: "黄色", color: "yellow" },
           { label: "蓝色", color: "blue" },
           { label: "绿色", color: "green" },
           { label: "红色", color: "red" },
           { label: "紫色", color: "purple" },
+          { label: "橙色", color: "orange" },
+          { label: "粉色", color: "pink" },
+          { label: "青色", color: "cyan" },
+          { label: "棕色", color: "brown" },
+          { label: "青柠色", color: "lime" },
         ];
 
-        // 使用数组map()方法和模板字符串
         const colorLinks = colorCommands
           .map(
             (c) =>
@@ -124,14 +145,12 @@ function activate(context) {
                 })
               )})`
           )
-          .join(" | "); // 数组join()方法
+          .join(" | ");
 
-        // 创建Markdown字符串
         const mdString = new vscode.MarkdownString();
-        mdString.isTrusted = true; // 启用命令执行
+        mdString.isTrusted = true;
         mdString.appendMarkdown("选择注释颜色：\n\n" + colorLinks);
 
-        // 返回Hover对象（new 构造函数）
         return new vscode.Hover(mdString);
       }
     },
@@ -167,6 +186,11 @@ function activate(context) {
           { label: "绿色", color: "green" },
           { label: "红色", color: "red" },
           { label: "紫色", color: "purple" },
+          { label: "橙色", color: "orange" },
+          { label: "粉色", color: "pink" },
+          { label: "青色", color: "cyan" },
+          { label: "棕色", color: "brown" },
+          { label: "青柠色", color: "lime" },
         ];
 
         const selected = await vscode.window.showQuickPick(items, {
@@ -202,7 +226,7 @@ function activate(context) {
     });
   }
 
-  // 将提供器和命令加入订阅列表（扩展生命周期管理）
+  // 将提供器和命令加入订阅列表
   context.subscriptions.push(hoverProvider, colorSetCommand, rightClickCommand);
 }
 
