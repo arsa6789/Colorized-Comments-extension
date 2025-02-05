@@ -4,7 +4,7 @@
 
 A VS Code extension that allows you to customize your code comments with colorful backgrounds and text colors. Make your important comments stand out and improve code readability.
 
-![Demo](https://i.imgur.com/OIfZQUq.gif)
+![Demo](https://i.imgur.com/ggtqvLn.gif)
 
 ## Features
 
@@ -31,9 +31,9 @@ A VS Code extension that allows you to customize your code comments with colorfu
 
 ## Extension Settings
 
-| Setting                        | Description                          | Default |
-| ------------------------------ | ------------------------------------ | ------- |
-| `colorizedComments.hoverDelay` | Delay before showing color picker    | 3000ms  |
+| Setting                        | Description                       | Default |
+| ------------------------------ | --------------------------------- | ------- |
+| `colorizedComments.hoverDelay` | Delay before showing color picker | 3000ms  |
 
 ## Supported Languages
 

@@ -2,7 +2,7 @@
   "name": "colorized-comments",
   "displayName": "Colorized Comments",
   "description": "Customize your code comments with colorful backgrounds and text colors to improve readability. 为代码注释添加自定义颜色，提升可读性。",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "publisher": "ChenKaiXuan",
   "author": {
     "name": "Chen KaiXuan",

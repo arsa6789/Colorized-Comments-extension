@@ -4,7 +4,7 @@
 
 为 VS Code 打造的代码注释美化扩展。通过自定义背景色和文字颜色，让重要的注释更加醒目，提升代码的可读性。
 
-![演示](https://i.imgur.com/OIfZQUq.gif)
+![Demo](https://i.imgur.com/ggtqvLn.gif)
 
 ## 特性
 
