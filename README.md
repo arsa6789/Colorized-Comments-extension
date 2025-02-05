@@ -1,10 +1,10 @@
 # Colorized Comments
 
-[中文](README_CN.md) | English
+[中文](./README_CN.md) | English
 
 A VS Code extension that allows you to customize your code comments with colorful backgrounds and text colors. Make your important comments stand out and improve code readability.
 
-![Demo](images/demo.gif)
+![Demo](https://i.imgur.com/OIfZQUq.gif)
 
 ## Features
 
