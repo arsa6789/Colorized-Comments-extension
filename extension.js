@@ -383,9 +383,18 @@ function activate(context) {
     });
   }
 
-  // 将所有的订阅（事件监听器、命令）添加到上下文中
-  // 这样当扩展停用时，VS Code会自动清理这些资源
-  context.subscriptions.push(hoverProvider, rightClickCommand);
+  // 检查是否启用悬停功能
+  const activateHover = vscode.workspace
+    .getConfiguration("colorizedComments")
+    .get("activateHover");
+
+  // 只有在用户启用悬停功能时才注册 hoverProvider
+  if (activateHover) {
+    context.subscriptions.push(hoverProvider);
+  }
+
+  // 将右键菜单命令添加到上下文中
+  context.subscriptions.push(rightClickCommand);
 }
 
 // 导出模块必须的激活/停用函数
