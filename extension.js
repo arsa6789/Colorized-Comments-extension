@@ -116,8 +116,15 @@ const isCommentLine = (text, languageId = "") => {
  * - workspaceState: 持久化存储数据
  */
 function activate(context) {
-  console.log("=============================");
   console.log("Colorized Comments 扩展正在启动...");
+
+  // 强制设置 activateHover 为 false
+  const config = vscode.workspace.getConfiguration("colorizedComments");
+  config.update("activateHover", false, true).then(() => {
+    console.log("已强制设置 activateHover 为 false");
+    // 初始化 hover provider
+    updateHoverProvider(context);
+  });
 
   // 显示通知提醒用户扩展已激活
   vscode.window.showInformationMessage("彩色注释扩展已启动！");
@@ -296,29 +303,69 @@ function activate(context) {
     }
   }
 
-  // 注册悬停提供器：当鼠标悬停在注释行时触发
-  const hoverProvider = vscode.languages.registerHoverProvider("*", {
-    provideHover(document, position) {
-      const line = document.lineAt(position.line);
-      // 检查是否是注释行
-      if (isCommentLine(line.text, document.languageId)) {
-        return new Promise((resolve) => {
-          // 从用户配置中获取延迟时间
-          const config = vscode.workspace.getConfiguration("colorizedComments");
-          const hoverDelay = config.get("hoverDelay", 3000);
+  // 全局变量来跟踪当前的 hover provider
+  let currentHoverProvider = null;
 
-          // 延迟显示颜色选择器
-          setTimeout(async () => {
-            const editor = vscode.window.activeTextEditor;
-            if (editor) {
-              await showColorPicker(editor, position.line);
-            }
-            resolve(null);
-          }, hoverDelay);
-        });
+  // 检查是否启用悬停功能并相应地更新
+  function updateHoverProvider(context) {
+    console.log("正在检查 hover provider 状态...");
+
+    // 如果存在旧的 provider，先清理掉
+    if (currentHoverProvider) {
+      console.log("清理旧的 hover provider");
+      currentHoverProvider.dispose();
+      currentHoverProvider = null;
+    }
+
+    // 检查设置
+    const config = vscode.workspace.getConfiguration("colorizedComments");
+    const activateHover = config.get("activateHover");
+
+    console.log("activateHover 设置值:", activateHover);
+    console.log("activateHover 类型:", typeof activateHover);
+
+    // 只有在明确设置为 true 时才创建新的 provider
+    if (activateHover === true) {
+      console.log("创建新的 hover provider");
+      currentHoverProvider = vscode.languages.registerHoverProvider("*", {
+        provideHover(document, position) {
+          const line = document.lineAt(position.line);
+          if (isCommentLine(line.text, document.languageId)) {
+            return new Promise((resolve) => {
+              const config = vscode.workspace.getConfiguration("colorizedComments");
+              const hoverDelay = config.get("hoverDelay", 3000);
+
+              setTimeout(async () => {
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                  await showColorPicker(editor, position.line);
+                }
+                resolve(null);
+              }, hoverDelay);
+            });
+          }
+          return null;
+        },
+      });
+
+      if (currentHoverProvider) {
+        context.subscriptions.push(currentHoverProvider);
+        console.log("hover provider 已注册");
       }
-    },
-  });
+    } else {
+      console.log("hover provider 已禁用");
+    }
+  }
+
+  // 监听设置变化
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration("colorizedComments.activateHover")) {
+        console.log("检测到 activateHover 设置变化");
+        updateHoverProvider(context);
+      }
+    })
+  );
 
   // 注册右键菜单命令
   let rightClickCommand = vscode.commands.registerCommand(
@@ -381,16 +428,6 @@ function activate(context) {
         );
       }
     });
-  }
-
-  // 检查是否启用悬停功能
-  const activateHover = vscode.workspace
-    .getConfiguration("colorizedComments")
-    .get("activateHover");
-
-  // 只有在用户启用悬停功能时才注册 hoverProvider
-  if (activateHover) {
-    context.subscriptions.push(hoverProvider);
   }
 
   // 将右键菜单命令添加到上下文中
